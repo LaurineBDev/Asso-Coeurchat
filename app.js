@@ -149,7 +149,7 @@ function renderListeAnimaux() {
         textDiv.appendChild(editBtn);
       }
 
-      listeAnimaux.appendChild(div);
+      listeAnimaux.prepend(div);
     });
   });
 }
