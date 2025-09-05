@@ -1,30 +1,26 @@
-/* ======================== Styles globaux   ======================== */
+/* ======================== Styles globaux ======================== */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
 }
 
+/* Classe utilitaire pour cacher les éléments */
 .hidden {
   display: none;
 }
 
+/* Styles généraux pour les formulaires */
 form {
   margin-bottom: 20px;
 }
 
-/* ======================== Formulaire admin / ajout animal   ======================== */
+/* ======================== Formulaire admin / ajout animal ======================== */
 #animal-form input,
 #animal-form textarea {
   padding: 8px;
   margin: 5px;
-  width: 300px; 
-  box-sizing: border-box;
-}
-
-#animal-form button {
-  padding: 8px;
-  margin: 5px;
-  cursor: pointer;
+  width: 300px;
+  box-sizing: border-box; /* inclut padding dans la largeur */
 }
 
 #animal-form select {
@@ -34,13 +30,20 @@ form {
   box-sizing: border-box;
 }
 
-/* ========================   Liste des animaux   ======================== */
+#animal-form button {
+  padding: 8px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+/* ======================== Liste des animaux ======================== */
 #liste-animaux {
   display: flex;
   flex-direction: column;  
   align-items: center;     
 }
 
+/* Carte individuelle d’un animal */
 .animal {
   border: 1px solid #ccc;
   padding: 10px;
@@ -69,7 +72,7 @@ form {
   flex-shrink: 0;          /* image ne se réduit pas */
 }
 
-/* ========================   Overlay photo fullscreen   ======================== */
+/* ======================== Overlay photo fullscreen ======================== */
 .overlay {
   position: fixed;
   top: 0;
@@ -91,7 +94,7 @@ form {
   cursor: zoom-out;
 }
 
-/* ========================   Bouton modifie   ======================== */
+/* ======================== Bouton modifier ======================== */
 .edit-btn {
   background-color: #f0ad4e;
   border: none;
@@ -101,7 +104,7 @@ form {
   border-radius: 5px;
 }
 
-/* ========================   Connexion staff discrète   ======================== */
+/* ======================== Connexion staff discrète ======================== */
 #login-section {
   position: fixed;           /* reste visible en haut même au scroll */
   top: 20px;                
@@ -116,6 +119,7 @@ form {
   z-index: 1001;             /* devant les autres éléments */
 }
 
+/* Inputs et bouton du formulaire de connexion */
 #login-section input,
 #login-section button {
   width: 100%;
@@ -124,6 +128,7 @@ form {
   margin-bottom: 5px;
 }
 
+/* Bouton connexion */
 #login-section button {
   background-color: #4CAF50;
   color: white;
@@ -132,6 +137,7 @@ form {
   cursor: pointer;
 }
 
+/* Titre du formulaire connexion */
 #login-section h2 {
   font-size: 1rem;
   margin-bottom: 10px;

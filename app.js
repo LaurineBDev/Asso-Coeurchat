@@ -1,8 +1,13 @@
+// ======================== Imports Firebase ========================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { addDoc, collection, doc, getFirestore, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  addDoc, collection, doc, getFirestore, onSnapshot, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// -------------------- Firebase config --------------------
+// ======================== Configuration Firebase ========================
 const firebaseConfig = {
   apiKey: "AIzaSyCXfqXDrchazy8K8lWYpjRCbkGJYD1bnyI",
   authDomain: "asso-chat62.firebaseapp.com",
@@ -17,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// -------------------- DOM Elements --------------------
+// ======================== DOM Elements ========================
 const loginForm = document.getElementById("login-form");
 const loginSection = document.getElementById("login-section");
 const logoutSection = document.getElementById("logout-section");
@@ -30,14 +35,15 @@ const listeAnimaux = document.getElementById("liste-animaux");
 const overlay = document.getElementById("overlay");
 const overlayImg = document.getElementById("overlay-img");
 
-let currentEditId = null;
-let isAdmin = false;
+let currentEditId = null;  // ID de l'animal en cours de modification
+let isAdmin = false;        // Détermine si l'utilisateur est admin
 
-// -------------------- Connexion --------------------
+// ======================== Connexion ========================
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
@@ -45,7 +51,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// -------------------- Déconnexion --------------------
+// ======================== Déconnexion ========================
 logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
   currentEditId = null;
@@ -53,7 +59,7 @@ logoutBtn.addEventListener("click", async () => {
   animalForm.querySelector("button").textContent = "Ajouter";
 });
 
-// -------------------- Changement d’état --------------------
+// ======================== Changement d’état ========================
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginSection.classList.add("hidden");
@@ -70,9 +76,10 @@ onAuthStateChanged(auth, (user) => {
   renderListeAnimaux();
 });
 
-// -------------------- Ajouter / Modifier un animal --------------------
+// ======================== Ajouter / Modifier un animal ========================
 animalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const status = document.getElementById("status").value;
   const nom = document.getElementById("nom").value;
   const naissance = document.getElementById("naissance").value;
@@ -82,11 +89,13 @@ animalForm.addEventListener("submit", async (e) => {
 
   try {
     if (currentEditId) {
+      // Modification d'un animal existant
       const docRef = doc(db, "animaux", currentEditId);
       await updateDoc(docRef, { nom, naissance, photo, description, sexe, status });
       currentEditId = null;
       animalForm.querySelector("button").textContent = "Ajouter";
     } else {
+      // Ajout d'un nouvel animal
       await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe, status });
     }
     animalForm.reset();
@@ -95,7 +104,7 @@ animalForm.addEventListener("submit", async (e) => {
   }
 });
 
-// -------------------- Lightbox --------------------
+// ======================== Lightbox ========================
 function showFullscreen(src) {
   overlayImg.src = src;
   overlay.style.display = "flex";
@@ -105,26 +114,23 @@ overlay.addEventListener("click", () => {
   overlay.style.display = "none";
 });
 
-// -------------------- Affichage des animaux --------------------
+// ======================== Affichage des animaux ========================
 function renderListeAnimaux() {
   onSnapshot(collection(db, "animaux"), (snapshot) => {
-    listeAnimaux.innerHTML = "";
+    listeAnimaux.innerHTML = "";  // Vide la liste avant affichage
+
     snapshot.forEach((docSnap) => {
       const animal = docSnap.data();
+
+      // Création de la carte animal
       const div = document.createElement("div");
       div.classList.add("animal");
 
       // Texte à gauche
       const textDiv = document.createElement("div");
       textDiv.classList.add("text-content");
-      textDiv.innerHTML = `
-        <p>Statut : ${animal.status || "En recherche de famille"}</p>
-        <h3>${animal.nom}</h3>
-        <p>Date de naissance : ${animal.naissance}</p>
-        <p>Sexe : ${animal.sexe}</p>
-        <p>${animal.description}</p>
-      `;
-     // Traduction des statuts
+
+      // Traduction des statuts
       const statusText = animal.status === "recherche"
         ? "En recherche de famille"
         : animal.status === "reserve"
@@ -140,6 +146,7 @@ function renderListeAnimaux() {
         <p>Sexe : ${animal.sexe}</p>
         <p>${animal.description}</p>
       `;
+
       // Image à droite
       const img = document.createElement("img");
       img.src = animal.photo;
@@ -150,9 +157,27 @@ function renderListeAnimaux() {
       div.appendChild(textDiv);
       div.appendChild(img);
 
-      // Boutons admin
+      // ======================== Bouton pour utilisateurs (non-admin) ========================
+      const interestBtn = document.createElement("button");
+      interestBtn.textContent = "Intéressé par l'animal, envoyer un mail";
+      interestBtn.classList.add("adopt-btn");
+      interestBtn.addEventListener("click", () => {
+        const subject = encodeURIComponent(`Intérêt pour ${animal.nom}`);
+        const body = encodeURIComponent(
+          `Bonjour,\n\nJe suis intéressé par ${animal.nom}. J'aimerais avoir plus d'informations sur cette animal, pouvez-vous me recontacter.\n\nCordialement.`
+        );
+
+        const mailLink = document.createElement("a");
+        // ============ ↓ Ici modifier le mail de l'asso===========
+        mailLink.href = `mailto:maildel@asso.com?subject=${subject}&body=${body}`;
+        mailLink.click();
+      });
+
+      textDiv.appendChild(interestBtn);
+
+      // ======================== Boutons admin ========================
       if (isAdmin) {
-        // Boutons de changement de statut
+        // Changer le statut
         const statusDiv = document.createElement("div");
         statusDiv.classList.add("status-buttons");
 
@@ -174,7 +199,7 @@ function renderListeAnimaux() {
 
         textDiv.appendChild(statusDiv);
 
-        // Bouton Modifier
+        // Modifier un animal
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
         editBtn.classList.add("edit-btn");
@@ -196,4 +221,3 @@ function renderListeAnimaux() {
     });
   });
 }
-

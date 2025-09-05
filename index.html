@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <title>Association – Adoptions</title>
+  <!-- Feuille de style principale -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>🐾 Association au coeur des chats 62</h1>
 
-  <!-- Connexion -->
+  <!-- ================= Connexion ================= -->
   <div id="login-section">
     <h2>Connexion staff</h2>
     <form id="login-form">
@@ -18,46 +19,54 @@
     </form>
   </div>
 
-  <!-- Déconnexion -->
+  <!-- ================= Déconnexion ================= -->
   <div id="logout-section" class="hidden">
     <p id="user-info"></p>
     <button id="logout-btn">Se déconnecter</button>
   </div>
 
-  <!-- Formulaire admin -->
+  <!-- ================= Formulaire Admin ================= -->
   <div id="admin-section" class="hidden">
     <h2>Ajouter / Modifier un animal</h2>
     <form id="animal-form">
-      <!-- ============Status de l'animal============= -->
+      
+      <!-- ======= Sélection du statut de l'animal ======= -->
       <select id="status">
         <option value="recherche">En recherche de famille</option>
-       <option value="reserve">Réservé</option>
-       <option value="adopte">Déjà adopté</option>
-     </select>
-     <!-- Infos de l'animal -->
+        <option value="reserve">Réservé</option>
+        <option value="adopte">Déjà adopté</option>
+      </select>
+
+      <!-- ======= Informations de l'animal ======= -->
       <input type="text" id="nom" placeholder="Nom" required>
       <input type="date" id="naissance" required>
       <input type="text" id="photo" placeholder="URL de la photo" required>
-       <select id="sexe" required>
-      <option value="">Sélectionnez le sexe</option>
-      <option value="Mâle">Mâle</option>
-      <option value="Femelle">Femelle</option>
-    </select>
+
+      <!-- Sélection du sexe de l'animal -->
+      <select id="sexe" required>
+        <option value="">Sélectionnez le sexe</option>
+        <option value="Mâle">Mâle</option>
+        <option value="Femelle">Femelle</option>
+      </select>
+
+      <!-- Description de l'animal -->
       <textarea id="description" placeholder="Description" rows="4" required></textarea>
+
+      <!-- Bouton pour ajouter/modifier l'animal -->
       <button type="submit">Ajouter</button>
     </form>
   </div>
 
-  <!-- Liste publique -->
+  <!-- ================= Liste publique des animaux ================= -->
   <h2>Animaux à adopter</h2>
   <div id="liste-animaux"></div>
 
-  <!-- Overlay pour photo plein écran -->
+  <!-- ================= Overlay pour photo plein écran ================= -->
   <div id="overlay" class="overlay">
     <img id="overlay-img" src="" alt="Photo plein écran">
   </div>
 
-  <!-- Script JS -->
+  <!-- ================= Script JS principal ================= -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
