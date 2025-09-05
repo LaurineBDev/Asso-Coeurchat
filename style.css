@@ -1,25 +1,34 @@
-body { font-family: Arial, sans-serif;
-   margin: 20px; }
+body { font-family: Arial, sans-serif; margin: 20px; }
 
 .hidden { display: none; }
 
 form { margin-bottom: 20px; }
 
-input, textarea, button { padding: 8px;
-   margin: 5px;
-    width: 95%; }
+input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
 
-.animal { border: 1px solid #ccc;
-   padding: 10px;
-    margin: 5px 0;
-     border-radius: 8px; }
+.animal {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  display: flex;              /* Flexbox pour aligner texte et image */
+  align-items: center;        /* centre verticalement */
+  justify-content: space-between;
+  gap: 20px;
+}
 
+.animal .text-content {
+  flex: 1;                    /* texte prend l'espace disponible */
+}
 
-     /* -----------Img content--------------- */
-img { max-width: 300px;
-   border-radius: 8px; }
+.animal img {
+  max-width: 300px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;              /* image ne se réduit pas */
+}
 
-   /* Overlay pour photo fullscreen */
+/* Overlay pour photo fullscreen */
 .overlay {
   position: fixed;
   top: 0;
@@ -41,12 +50,12 @@ img { max-width: 300px;
   cursor: zoom-out;
 }
 
-
-
-   /* -------------Btn modifier------------------- */
-.edit-btn { background-color: #f0ad4e;
-   border: none;
-    color: white;
-     padding: 5px 10px;
-      cursor: pointer;
-       border-radius: 5px; }
+/* Bouton modifier */
+.edit-btn {
+  background-color: #f0ad4e;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}

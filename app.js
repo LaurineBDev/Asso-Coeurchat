@@ -111,18 +111,27 @@ function renderListeAnimaux() {
       const animal = docSnap.data();
       const div = document.createElement("div");
       div.classList.add("animal");
-      div.innerHTML = `
+
+      // Texte à gauche
+      const textDiv = document.createElement("div");
+      textDiv.classList.add("text-content");
+      textDiv.innerHTML = `
         <h3>${animal.nom}</h3>
         <p>Date de naissance : ${animal.naissance}</p>
         <p>${animal.description}</p>
-        <img src="${animal.photo}" alt="${animal.nom}" class="animal-photo">
       `;
 
-      // Clic sur image pour fullscreen
-      div.querySelector(".animal-photo").addEventListener("click", () => {
-        showFullscreen(animal.photo);
-      });
+      // Image à droite
+      const img = document.createElement("img");
+      img.src = animal.photo;
+      img.alt = animal.nom;
+      img.classList.add("animal-photo");
+      img.addEventListener("click", () => showFullscreen(animal.photo));
 
+      div.appendChild(textDiv);
+      div.appendChild(img);
+
+      // Bouton Modifier pour admin
       if (isAdmin) {
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
@@ -135,7 +144,7 @@ function renderListeAnimaux() {
           currentEditId = docSnap.id;
           animalForm.querySelector("button").textContent = "Modifier";
         });
-        div.appendChild(editBtn);
+        textDiv.appendChild(editBtn);
       }
 
       listeAnimaux.appendChild(div);
