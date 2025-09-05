@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Association – Adoptions</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .hidden { display: none; }
+    form { margin-bottom: 20px; }
+    input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
+    .animal { border: 1px solid #ccc; padding: 10px; margin: 5px 0; border-radius: 8px; }
+    img { max-width: 150px; border-radius: 8px; display: block; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>🐾 Association – Adoptions</h1>
+
+  <!-- Connexion -->
+  <div id="login-section">
+    <h2>Connexion staff</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+    </form>
+  </div>
+
+  <!-- Déconnexion -->
+  <div id="logout-section" class="hidden">
+    <p id="user-info"></p>
+    <button id="logout-btn">Se déconnecter</button>
+  </div>
+
+  <!-- Formulaire admin -->
+  <div id="admin-section" class="hidden">
+    <h2>Ajouter / Modifier un animal</h2>
+    <form id="animal-form">
+      <input type="text" id="nom" placeholder="Nom" required>
+      <input type="date" id="naissance" required>
+      <input type="text" id="photo" placeholder="URL de la photo" required>
+      <textarea id="description" placeholder="Description" rows="4" required></textarea>
+      <button type="submit">Ajouter / Modifier</button>
+    </form>
+  </div>
+
+  <!-- Liste publique -->
+  <h2>Animaux à adopter</h2>
+  <div id="liste-animaux"></div>
+
+  <!-- Firebase -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ⚙️ Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXfqXDrchazy8K8lWYpjRCbkGJYD1bnyI",
+      authDomain: "asso-chat62.firebaseapp.com",
+      projectId: "asso-chat62",
+      storageBucket: "asso-chat62.appspot.com",
+      messagingSenderId: "283608611023",
+      appId: "1:283608611023:web:d0f47df1457b11e4e19fba",
+      measurementId: "G-MTTSWTZR20"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Références aux éléments HTML
+    const loginForm = document.getElementById("login-form");
+    const loginSection = document.getElementById("login-section");
+    const logoutSection = document.getElementById("logout-section");
+    const adminSection = document.getElementById("admin-section");
+    const userInfo = document.getElementById("user-info");
+    const logoutBtn = document.getElementById("logout-btn");
+    const animalForm = document.getElementById("animal-form");
+    const listeAnimaux = document.getElementById("liste-animaux");
+
+    // Connexion
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        alert("Erreur de connexion : " + error.message);
+      }
+    });
+
+    // Déconnexion
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    // Sur changement d’état
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginSection.classList.add("hidden");
+        logoutSection.classList.remove("hidden");
+        adminSection.classList.remove("hidden");
+        userInfo.textContent = "Connecté : " + user.email;
+      } else {
+        loginSection.classList.remove("hidden");
+        logoutSection.classList.add("hidden");
+        adminSection.classList.add("hidden");
+      }
+    });
+
+    // Ajout / Modification d’un animal
+    animalForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nom = document.getElementById("nom").value;
+      const naissance = document.getElementById("naissance").value;
+      const photo = document.getElementById("photo").value;
+      const description = document.getElementById("description").value;
+
+      try {
+        if (animalForm.dataset.docId) {
+          // Mise à jour
+          const docRef = doc(db, "animaux", animalForm.dataset.docId);
+          await updateDoc(docRef, { nom, naissance, photo, description });
+          delete animalForm.dataset.docId;
+        } else {
+          // Ajout
+          await addDoc(collection(db, "animaux"), { nom, naissance, photo, description });
+        }
+        animalForm.reset();
+      } catch (error) {
+        alert("Erreur ajout/modification : " + error.message);
+      }
+    });
+
+    // Affichage en direct
+    onSnapshot(collection(db, "animaux"), (snapshot) => {
+      listeAnimaux.innerHTML = "";
+      snapshot.forEach((docSnap) => {
+        const animal = docSnap.data();
+        const div = document.createElement("div");
+        div.classList.add("animal");
+        div.innerHTML = `
+          <h3>${animal.nom}</h3>
+          <p>Date de naissance : ${animal.naissance}</p>
+          <p>${animal.description}</p>
+          <img src="${animal.photo}" alt="${animal.nom}">
+          <button class="edit-btn">Modifier</button>
+        `;
+        listeAnimaux.appendChild(div);
+
+        // Pré-remplir le formulaire pour modification
+        div.querySelector(".edit-btn").addEventListener("click", () => {
+          document.getElementById("nom").value = animal.nom;
+          document.getElementById("naissance").value = animal.naissance;
+          document.getElementById("photo").value = animal.photo;
+          document.getElementById("description").value = animal.description;
+          animalForm.dataset.docId = docSnap.id;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
