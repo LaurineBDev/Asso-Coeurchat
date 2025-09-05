@@ -9,7 +9,8 @@
     form { margin-bottom: 20px; }
     input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
     .animal { border: 1px solid #ccc; padding: 10px; margin: 5px 0; border-radius: 8px; }
-    img { max-width: 150px; border-radius: 8px; display: block; margin-top: 5px; }
+    img { max-width: 150px; border-radius: 8px; }
+    .edit-btn { background-color: #f0ad4e; border: none; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
   </style>
 </head>
 <body>
@@ -39,7 +40,7 @@
       <input type="date" id="naissance" required>
       <input type="text" id="photo" placeholder="URL de la photo" required>
       <textarea id="description" placeholder="Description" rows="4" required></textarea>
-      <button type="submit">Ajouter / Modifier</button>
+      <button type="submit">Ajouter</button>
     </form>
   </div>
 
@@ -49,14 +50,12 @@
 
   <!-- Firebase -->
   <script type="module">
-    // Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } 
+    import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } 
       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // ⚙️ Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCXfqXDrchazy8K8lWYpjRCbkGJYD1bnyI",
       authDomain: "asso-chat62.firebaseapp.com",
@@ -67,12 +66,10 @@
       measurementId: "G-MTTSWTZR20"
     };
 
-    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Références aux éléments HTML
     const loginForm = document.getElementById("login-form");
     const loginSection = document.getElementById("login-section");
     const logoutSection = document.getElementById("logout-section");
@@ -81,6 +78,9 @@
     const logoutBtn = document.getElementById("logout-btn");
     const animalForm = document.getElementById("animal-form");
     const listeAnimaux = document.getElementById("liste-animaux");
+
+    let currentEditId = null; // Pour savoir si on modifie
+    let isAdmin = false;      // Pour savoir si l'utilisateur est admin
 
     // Connexion
     loginForm.addEventListener("submit", async (e) => {
@@ -97,23 +97,29 @@
     // Déconnexion
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
+      currentEditId = null;
+      animalForm.reset();
+      animalForm.querySelector("button").textContent = "Ajouter";
     });
 
-    // Sur changement d’état
+    // Changement d’état
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginSection.classList.add("hidden");
         logoutSection.classList.remove("hidden");
         adminSection.classList.remove("hidden");
         userInfo.textContent = "Connecté : " + user.email;
+        isAdmin = true;
       } else {
         loginSection.classList.remove("hidden");
         logoutSection.classList.add("hidden");
         adminSection.classList.add("hidden");
+        isAdmin = false;
       }
+      renderListeAnimaux(); // Recharger la liste pour mettre à jour les boutons
     });
 
-    // Ajout / Modification d’un animal
+    // Ajouter / Modifier un animal
     animalForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const nom = document.getElementById("nom").value;
@@ -122,47 +128,52 @@
       const description = document.getElementById("description").value;
 
       try {
-        if (animalForm.dataset.docId) {
-          // Mise à jour
-          const docRef = doc(db, "animaux", animalForm.dataset.docId);
+        if (currentEditId) {
+          const docRef = doc(db, "animaux", currentEditId);
           await updateDoc(docRef, { nom, naissance, photo, description });
-          delete animalForm.dataset.docId;
+          currentEditId = null;
+          animalForm.querySelector("button").textContent = "Ajouter";
         } else {
-          // Ajout
           await addDoc(collection(db, "animaux"), { nom, naissance, photo, description });
         }
         animalForm.reset();
       } catch (error) {
-        alert("Erreur ajout/modification : " + error.message);
+        alert("Erreur : " + error.message);
       }
     });
 
-    // Affichage en direct
-    onSnapshot(collection(db, "animaux"), (snapshot) => {
-      listeAnimaux.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const animal = docSnap.data();
-        const div = document.createElement("div");
-        div.classList.add("animal");
-        div.innerHTML = `
-          <h3>${animal.nom}</h3>
-          <p>Date de naissance : ${animal.naissance}</p>
-          <p>${animal.description}</p>
-          <img src="${animal.photo}" alt="${animal.nom}">
-          <button class="edit-btn">Modifier</button>
-        `;
-        listeAnimaux.appendChild(div);
-
-        // Pré-remplir le formulaire pour modification
-        div.querySelector(".edit-btn").addEventListener("click", () => {
-          document.getElementById("nom").value = animal.nom;
-          document.getElementById("naissance").value = animal.naissance;
-          document.getElementById("photo").value = animal.photo;
-          document.getElementById("description").value = animal.description;
-          animalForm.dataset.docId = docSnap.id;
+    // Fonction pour afficher la liste des animaux
+    function renderListeAnimaux() {
+      onSnapshot(collection(db, "animaux"), (snapshot) => {
+        listeAnimaux.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const animal = docSnap.data();
+          const div = document.createElement("div");
+          div.classList.add("animal");
+          div.innerHTML = `
+            <h3>${animal.nom}</h3>
+            <p>Date de naissance : ${animal.naissance}</p>
+            <p>${animal.description}</p>
+            <img src="${animal.photo}" alt="${animal.nom}">
+          `;
+          if (isAdmin) {
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Modifier";
+            editBtn.classList.add("edit-btn");
+            editBtn.addEventListener("click", () => {
+              document.getElementById("nom").value = animal.nom;
+              document.getElementById("naissance").value = animal.naissance;
+              document.getElementById("photo").value = animal.photo;
+              document.getElementById("description").value = animal.description;
+              currentEditId = docSnap.id;
+              animalForm.querySelector("button").textContent = "Modifier";
+            });
+            div.appendChild(editBtn);
+          }
+          listeAnimaux.appendChild(div);
         });
       });
-    });
+    }
   </script>
 </body>
 </html>
