@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { addDoc, collection, doc, getFirestore, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// -------------------- Firebase config --------------------
 const firebaseConfig = {
   apiKey: "AIzaSyCXfqXDrchazy8K8lWYpjRCbkGJYD1bnyI",
   authDomain: "asso-chat62.firebaseapp.com",
@@ -16,6 +17,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// -------------------- DOM Elements --------------------
 const loginForm = document.getElementById("login-form");
 const loginSection = document.getElementById("login-section");
 const logoutSection = document.getElementById("logout-section");
@@ -25,10 +27,13 @@ const logoutBtn = document.getElementById("logout-btn");
 const animalForm = document.getElementById("animal-form");
 const listeAnimaux = document.getElementById("liste-animaux");
 
+const overlay = document.getElementById("overlay");
+const overlayImg = document.getElementById("overlay-img");
+
 let currentEditId = null;
 let isAdmin = false;
 
-// Connexion
+// -------------------- Connexion --------------------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("email").value;
@@ -40,7 +45,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Déconnexion
+// -------------------- Déconnexion --------------------
 logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
   currentEditId = null;
@@ -48,7 +53,7 @@ logoutBtn.addEventListener("click", async () => {
   animalForm.querySelector("button").textContent = "Ajouter";
 });
 
-// Changement d’état
+// -------------------- Changement d’état --------------------
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginSection.classList.add("hidden");
@@ -65,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
   renderListeAnimaux();
 });
 
-// Ajouter / Modifier un animal
+// -------------------- Ajouter / Modifier un animal --------------------
 animalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const nom = document.getElementById("nom").value;
@@ -88,7 +93,17 @@ animalForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Affichage des animaux
+// -------------------- Lightbox --------------------
+function showFullscreen(src) {
+  overlayImg.src = src;
+  overlay.style.display = "flex";
+}
+
+overlay.addEventListener("click", () => {
+  overlay.style.display = "none";
+});
+
+// -------------------- Affichage des animaux --------------------
 function renderListeAnimaux() {
   onSnapshot(collection(db, "animaux"), (snapshot) => {
     listeAnimaux.innerHTML = "";
@@ -100,8 +115,14 @@ function renderListeAnimaux() {
         <h3>${animal.nom}</h3>
         <p>Date de naissance : ${animal.naissance}</p>
         <p>${animal.description}</p>
-        <img src="${animal.photo}" alt="${animal.nom}">
+        <img src="${animal.photo}" alt="${animal.nom}" class="animal-photo">
       `;
+
+      // Clic sur image pour fullscreen
+      div.querySelector(".animal-photo").addEventListener("click", () => {
+        showFullscreen(animal.photo);
+      });
+
       if (isAdmin) {
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
@@ -116,6 +137,7 @@ function renderListeAnimaux() {
         });
         div.appendChild(editBtn);
       }
+
       listeAnimaux.appendChild(div);
     });
   });
