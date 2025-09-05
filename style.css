@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+.hidden { display: none; }
+form { margin-bottom: 20px; }
+input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
+.animal { border: 1px solid #ccc; padding: 10px; margin: 5px 0; border-radius: 8px; }
+img { max-width: 150px; border-radius: 8px; }
+.edit-btn { background-color: #f0ad4e; border: none; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; }

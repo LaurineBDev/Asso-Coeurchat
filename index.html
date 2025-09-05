@@ -3,15 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Association – Adoptions</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .hidden { display: none; }
-    form { margin-bottom: 20px; }
-    input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
-    .animal { border: 1px solid #ccc; padding: 10px; margin: 5px 0; border-radius: 8px; }
-    img { max-width: 150px; border-radius: 8px; }
-    .edit-btn { background-color: #f0ad4e; border: none; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>🐾 Association – Adoptions</h1>
@@ -48,132 +40,7 @@
   <h2>Animaux à adopter</h2>
   <div id="liste-animaux"></div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot } 
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCXfqXDrchazy8K8lWYpjRCbkGJYD1bnyI",
-      authDomain: "asso-chat62.firebaseapp.com",
-      projectId: "asso-chat62",
-      storageBucket: "asso-chat62.appspot.com",
-      messagingSenderId: "283608611023",
-      appId: "1:283608611023:web:d0f47df1457b11e4e19fba",
-      measurementId: "G-MTTSWTZR20"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const loginForm = document.getElementById("login-form");
-    const loginSection = document.getElementById("login-section");
-    const logoutSection = document.getElementById("logout-section");
-    const adminSection = document.getElementById("admin-section");
-    const userInfo = document.getElementById("user-info");
-    const logoutBtn = document.getElementById("logout-btn");
-    const animalForm = document.getElementById("animal-form");
-    const listeAnimaux = document.getElementById("liste-animaux");
-
-    let currentEditId = null; // Pour savoir si on modifie
-    let isAdmin = false;      // Pour savoir si l'utilisateur est admin
-
-    // Connexion
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        alert("Erreur de connexion : " + error.message);
-      }
-    });
-
-    // Déconnexion
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      currentEditId = null;
-      animalForm.reset();
-      animalForm.querySelector("button").textContent = "Ajouter";
-    });
-
-    // Changement d’état
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginSection.classList.add("hidden");
-        logoutSection.classList.remove("hidden");
-        adminSection.classList.remove("hidden");
-        userInfo.textContent = "Connecté : " + user.email;
-        isAdmin = true;
-      } else {
-        loginSection.classList.remove("hidden");
-        logoutSection.classList.add("hidden");
-        adminSection.classList.add("hidden");
-        isAdmin = false;
-      }
-      renderListeAnimaux(); // Recharger la liste pour mettre à jour les boutons
-    });
-
-    // Ajouter / Modifier un animal
-    animalForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const nom = document.getElementById("nom").value;
-      const naissance = document.getElementById("naissance").value;
-      const photo = document.getElementById("photo").value;
-      const description = document.getElementById("description").value;
-
-      try {
-        if (currentEditId) {
-          const docRef = doc(db, "animaux", currentEditId);
-          await updateDoc(docRef, { nom, naissance, photo, description });
-          currentEditId = null;
-          animalForm.querySelector("button").textContent = "Ajouter";
-        } else {
-          await addDoc(collection(db, "animaux"), { nom, naissance, photo, description });
-        }
-        animalForm.reset();
-      } catch (error) {
-        alert("Erreur : " + error.message);
-      }
-    });
-
-    // Fonction pour afficher la liste des animaux
-    function renderListeAnimaux() {
-      onSnapshot(collection(db, "animaux"), (snapshot) => {
-        listeAnimaux.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-          const animal = docSnap.data();
-          const div = document.createElement("div");
-          div.classList.add("animal");
-          div.innerHTML = `
-            <h3>${animal.nom}</h3>
-            <p>Date de naissance : ${animal.naissance}</p>
-            <p>${animal.description}</p>
-            <img src="${animal.photo}" alt="${animal.nom}">
-          `;
-          if (isAdmin) {
-            const editBtn = document.createElement("button");
-            editBtn.textContent = "Modifier";
-            editBtn.classList.add("edit-btn");
-            editBtn.addEventListener("click", () => {
-              document.getElementById("nom").value = animal.nom;
-              document.getElementById("naissance").value = animal.naissance;
-              document.getElementById("photo").value = animal.photo;
-              document.getElementById("description").value = animal.description;
-              currentEditId = docSnap.id;
-              animalForm.querySelector("button").textContent = "Modifier";
-            });
-            div.appendChild(editBtn);
-          }
-          listeAnimaux.appendChild(div);
-        });
-      });
-    }
-  </script>
+  <!-- Script JS -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>
