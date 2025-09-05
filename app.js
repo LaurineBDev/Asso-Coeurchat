@@ -35,6 +35,10 @@ const listeAnimaux = document.getElementById("liste-animaux");
 const overlay = document.getElementById("overlay");
 const overlayImg = document.getElementById("overlay-img");
 
+const searchName = document.getElementById("search-name");
+const searchSexe = document.getElementById("search-sexe");
+const searchAge = document.getElementById("search-age");
+
 let currentEditId = null;  // ID de l'animal en cours de modification
 let isAdmin = false;        // Détermine si l'utilisateur est admin
 
@@ -89,13 +93,11 @@ animalForm.addEventListener("submit", async (e) => {
 
   try {
     if (currentEditId) {
-      // Modification d'un animal existant
       const docRef = doc(db, "animaux", currentEditId);
       await updateDoc(docRef, { nom, naissance, photo, description, sexe, status });
       currentEditId = null;
       animalForm.querySelector("button").textContent = "Ajouter";
     } else {
-      // Ajout d'un nouvel animal
       await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe, status });
     }
     animalForm.reset();
@@ -114,23 +116,43 @@ overlay.addEventListener("click", () => {
   overlay.style.display = "none";
 });
 
+// ======================== Filtrage ========================
+function filterAnimal(animal) {
+  const nameFilter = searchName.value.toLowerCase();
+  if (nameFilter && !animal.nom.toLowerCase().includes(nameFilter)) return false;
+
+  const sexeFilter = searchSexe.value.toLowerCase();
+  if (sexeFilter && animal.sexe.toLowerCase() !== sexeFilter) return false;
+
+  const ageFilter = searchAge.value;
+  if (ageFilter) {
+    const birthYear = new Date(animal.naissance).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
+
+    if (ageFilter === "0-1" && !(age >= 0 && age <= 1)) return false;
+    if (ageFilter === "1-3" && !(age > 1 && age <= 3)) return false;
+    if (ageFilter === "3+" && !(age > 3)) return false;
+  }
+
+  return true;
+}
+
 // ======================== Affichage des animaux ========================
 function renderListeAnimaux() {
   onSnapshot(collection(db, "animaux"), (snapshot) => {
-    listeAnimaux.innerHTML = "";  // Vide la liste avant affichage
+    listeAnimaux.innerHTML = "";
 
     snapshot.forEach((docSnap) => {
       const animal = docSnap.data();
+      if (!filterAnimal(animal)) return;
 
-      // Création de la carte animal
       const div = document.createElement("div");
       div.classList.add("animal");
 
-      // Texte à gauche
       const textDiv = document.createElement("div");
       textDiv.classList.add("text-content");
 
-      // Traduction des statuts
       const statusText = animal.status === "recherche"
         ? "En recherche de famille"
         : animal.status === "reserve"
@@ -147,7 +169,6 @@ function renderListeAnimaux() {
         <p>${animal.description}</p>
       `;
 
-      // Image à droite
       const img = document.createElement("img");
       img.src = animal.photo;
       img.alt = animal.nom;
@@ -157,27 +178,23 @@ function renderListeAnimaux() {
       div.appendChild(textDiv);
       div.appendChild(img);
 
-      // ======================== Bouton pour utilisateurs (non-admin) ========================
+      // Bouton "intéressé" pour tous
       const interestBtn = document.createElement("button");
       interestBtn.textContent = "Intéressé par l'animal, envoyer un mail";
       interestBtn.classList.add("adopt-btn");
       interestBtn.addEventListener("click", () => {
         const subject = encodeURIComponent(`Intérêt pour ${animal.nom}`);
         const body = encodeURIComponent(
-          `Bonjour,\n\nJe suis intéressé par ${animal.nom}. J'aimerais avoir plus d'informations sur cette animal, pouvez-vous me recontacter.\n\nCordialement.`
+          `Bonjour,\n\nJe suis intéressé par ${animal.nom}. J'aimerais avoir plus d'informations sur cet animal, pouvez-vous me recontacter.\n\nCordialement.`
         );
 
-        const mailLink = document.createElement("a");
-        // ============ ↓ Ici modifier le mail de l'asso===========
-        mailLink.href = `mailto:maildel@asso.com?subject=${subject}&body=${body}`;
-        mailLink.click();
+        window.location.href = `mailto:maildel@asso.com?subject=${subject}&body=${body}`;
       });
 
       textDiv.appendChild(interestBtn);
 
-      // ======================== Boutons admin ========================
+      // Admin controls
       if (isAdmin) {
-        // Changer le statut
         const statusDiv = document.createElement("div");
         statusDiv.classList.add("status-buttons");
 
@@ -199,7 +216,6 @@ function renderListeAnimaux() {
 
         textDiv.appendChild(statusDiv);
 
-        // Modifier un animal
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
         editBtn.classList.add("edit-btn");
@@ -221,3 +237,8 @@ function renderListeAnimaux() {
     });
   });
 }
+
+// ======================== Écouteurs filtres ========================
+searchName.addEventListener("input", renderListeAnimaux);
+searchSexe.addEventListener("change", renderListeAnimaux);
+searchAge.addEventListener("change", renderListeAnimaux);

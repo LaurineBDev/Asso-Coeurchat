@@ -142,3 +142,96 @@ form {
   font-size: 1rem;
   margin-bottom: 10px;
 }
+
+
+/* ======================== Responsive mobile ======================== */
+@media (max-width: 768px) {
+  /* Liste des animaux en largeur réduite et cartes plus compactes */
+  #liste-animaux {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .animal {
+    flex-direction: column;       /* empile image et texte verticalement */
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .animal .text-content {
+    max-width: 100%;
+  }
+
+  .animal img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Formulaire ajout animal */
+  #animal-form input,
+  #animal-form textarea,
+  #animal-form select,
+  #animal-form button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  /* Connexion staff */
+  #login-section {
+    position: static;             /* non fixé pour mobile */
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  #login-section input,
+  #login-section button {
+    width: 100%;
+  }
+
+  /* Barre de recherche */
+  #search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-input-container,
+  #search-bar button {
+    width: 100%;
+  }
+}
+
+/* Pour très petits écrans (téléphones < 480px) */
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+    font-size: 0.9rem;
+  }
+
+  .animal {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  #animal-form input,
+  #animal-form textarea,
+  #animal-form select,
+  #animal-form button {
+    padding: 6px;
+    font-size: 0.9rem;
+  }
+
+  #login-section {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  #search-bar button,
+  .search-input-container input {
+    font-size: 0.9rem;
+  }
+}
+
+
