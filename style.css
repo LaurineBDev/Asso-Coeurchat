@@ -1,34 +1,75 @@
-body { font-family: Arial, sans-serif; margin: 20px; }
+/* ======================== Styles globaux   ======================== */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
-form { margin-bottom: 20px; }
+form {
+  margin-bottom: 20px;
+}
 
-input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
+/* ======================== Formulaire admin / ajout animal   ======================== */
+#animal-form input,
+#animal-form textarea {
+  padding: 8px;
+  margin: 5px;
+  width: 300px; 
+  box-sizing: border-box;
+}
+
+#animal-form button {
+  padding: 8px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+#animal-form select {
+  padding: 8px;
+  margin: 5px;
+  width: 300px;
+  box-sizing: border-box;
+}
+
+/* ========================   Liste des animaux   ======================== */
+#liste-animaux {
+  display: flex;
+  flex-direction: column;  
+  align-items: center;     
+}
 
 .animal {
   border: 1px solid #ccc;
   padding: 10px;
   margin: 5px 0;
   border-radius: 8px;
-  display: flex;              /* Flexbox pour aligner texte et image */
-  align-items: center;        /* centre verticalement */
-  justify-content: space-between;
-  gap: 20px;
+  display: flex;          
+  align-items: flex-start; 
+  gap: 20px;               
+  width: 80%;             
+  max-width: 900px;      
 }
 
+/* Texte dans chaque carte */
 .animal .text-content {
-  flex: 1;                    /* texte prend l'espace disponible */
+  flex: 1;                /* prend tout l'espace restant */
+  max-width: 600px;        
+  word-wrap: break-word;   /* éviter que le texte dépasse */
 }
 
+/* Image dans chaque carte */
 .animal img {
   max-width: 300px;
+  height: auto;
   border-radius: 8px;
   cursor: pointer;
-  flex-shrink: 0;              /* image ne se réduit pas */
+  flex-shrink: 0;          /* image ne se réduit pas */
 }
 
-/* Overlay pour photo fullscreen */
+/* ========================   Overlay photo fullscreen   ======================== */
 .overlay {
   position: fixed;
   top: 0;
@@ -50,7 +91,7 @@ input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
   cursor: zoom-out;
 }
 
-/* Bouton modifier */
+/* ========================   Bouton modifie   ======================== */
 .edit-btn {
   background-color: #f0ad4e;
   border: none;
@@ -58,4 +99,40 @@ input, textarea, button { padding: 8px; margin: 5px; width: 95%; }
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
+}
+
+/* ========================   Connexion staff discrète   ======================== */
+#login-section {
+  position: fixed;           /* reste visible en haut même au scroll */
+  top: 20px;                
+  right: 20px;            
+  max-width: 250px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1001;             /* devant les autres éléments */
+}
+
+#login-section input,
+#login-section button {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+#login-section button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#login-section h2 {
+  font-size: 1rem;
+  margin-bottom: 10px;
 }

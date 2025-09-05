@@ -76,16 +76,17 @@ animalForm.addEventListener("submit", async (e) => {
   const nom = document.getElementById("nom").value;
   const naissance = document.getElementById("naissance").value;
   const photo = document.getElementById("photo").value;
+  const sexe = document.getElementById("sexe").value;
   const description = document.getElementById("description").value;
 
   try {
     if (currentEditId) {
       const docRef = doc(db, "animaux", currentEditId);
-      await updateDoc(docRef, { nom, naissance, photo, description });
+      await updateDoc(docRef, { nom, naissance, photo, description, sexe });
       currentEditId = null;
       animalForm.querySelector("button").textContent = "Ajouter";
     } else {
-      await addDoc(collection(db, "animaux"), { nom, naissance, photo, description });
+      await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe });
     }
     animalForm.reset();
   } catch (error) {
@@ -118,6 +119,7 @@ function renderListeAnimaux() {
       textDiv.innerHTML = `
         <h3>${animal.nom}</h3>
         <p>Date de naissance : ${animal.naissance}</p>
+        <p>Sexe : ${animal.sexe}</p>
         <p>${animal.description}</p>
       `;
 

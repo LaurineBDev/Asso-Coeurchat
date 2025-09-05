@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🐾 Association – Adoptions</h1>
+  <h1>🐾 Association au coeur des chats 62</h1>
 
   <!-- Connexion -->
   <div id="login-section">
@@ -31,6 +31,11 @@
       <input type="text" id="nom" placeholder="Nom" required>
       <input type="date" id="naissance" required>
       <input type="text" id="photo" placeholder="URL de la photo" required>
+       <select id="sexe" required>
+      <option value="">Sélectionnez le sexe</option>
+      <option value="Mâle">Mâle</option>
+      <option value="Femelle">Femelle</option>
+    </select>
       <textarea id="description" placeholder="Description" rows="4" required></textarea>
       <button type="submit">Ajouter</button>
     </form>
