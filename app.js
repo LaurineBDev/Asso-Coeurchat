@@ -73,6 +73,7 @@ onAuthStateChanged(auth, (user) => {
 // -------------------- Ajouter / Modifier un animal --------------------
 animalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const status = document.getElementById("status").value;
   const nom = document.getElementById("nom").value;
   const naissance = document.getElementById("naissance").value;
   const photo = document.getElementById("photo").value;
@@ -82,11 +83,11 @@ animalForm.addEventListener("submit", async (e) => {
   try {
     if (currentEditId) {
       const docRef = doc(db, "animaux", currentEditId);
-      await updateDoc(docRef, { nom, naissance, photo, description, sexe });
+      await updateDoc(docRef, { nom, naissance, photo, description, sexe, status });
       currentEditId = null;
       animalForm.querySelector("button").textContent = "Ajouter";
     } else {
-      await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe });
+      await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe, status });
     }
     animalForm.reset();
   } catch (error) {
@@ -117,12 +118,28 @@ function renderListeAnimaux() {
       const textDiv = document.createElement("div");
       textDiv.classList.add("text-content");
       textDiv.innerHTML = `
+        <p>Statut : ${animal.status || "En recherche de famille"}</p>
         <h3>${animal.nom}</h3>
         <p>Date de naissance : ${animal.naissance}</p>
         <p>Sexe : ${animal.sexe}</p>
         <p>${animal.description}</p>
       `;
+     // Traduction des statuts
+      const statusText = animal.status === "recherche"
+        ? "En recherche de famille"
+        : animal.status === "reserve"
+        ? "Réservé"
+        : animal.status === "adopte"
+        ? "Déjà adopté"
+        : "En recherche de famille";
 
+      textDiv.innerHTML = `
+        <p>Statut : ${statusText}</p>
+        <h3>${animal.nom}</h3>
+        <p>Date de naissance : ${animal.naissance}</p>
+        <p>Sexe : ${animal.sexe}</p>
+        <p>${animal.description}</p>
+      `;
       // Image à droite
       const img = document.createElement("img");
       img.src = animal.photo;
@@ -133,8 +150,31 @@ function renderListeAnimaux() {
       div.appendChild(textDiv);
       div.appendChild(img);
 
-      // Bouton Modifier pour admin
+      // Boutons admin
       if (isAdmin) {
+        // Boutons de changement de statut
+        const statusDiv = document.createElement("div");
+        statusDiv.classList.add("status-buttons");
+
+        const statuses = [
+          { value: "recherche", label: "En recherche" },
+          { value: "reserve", label: "Réservé" },
+          { value: "adopte", label: "Adopté" }
+        ];
+
+        statuses.forEach((s) => {
+          const btn = document.createElement("button");
+          btn.textContent = s.label;
+          btn.addEventListener("click", async () => {
+            const docRef = doc(db, "animaux", docSnap.id);
+            await updateDoc(docRef, { status: s.value });
+          });
+          statusDiv.appendChild(btn);
+        });
+
+        textDiv.appendChild(statusDiv);
+
+        // Bouton Modifier
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
         editBtn.classList.add("edit-btn");
@@ -143,13 +183,17 @@ function renderListeAnimaux() {
           document.getElementById("naissance").value = animal.naissance;
           document.getElementById("photo").value = animal.photo;
           document.getElementById("description").value = animal.description;
+          document.getElementById("sexe").value = animal.sexe;
+          document.getElementById("status").value = animal.status || "recherche";
           currentEditId = docSnap.id;
           animalForm.querySelector("button").textContent = "Modifier";
         });
+
         textDiv.appendChild(editBtn);
       }
 
-      listeAnimaux.prepend(div);
+      listeAnimaux.appendChild(div);
     });
   });
 }
+

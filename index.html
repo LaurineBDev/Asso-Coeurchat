@@ -28,6 +28,13 @@
   <div id="admin-section" class="hidden">
     <h2>Ajouter / Modifier un animal</h2>
     <form id="animal-form">
+      <!-- ============Status de l'animal============= -->
+      <select id="status">
+        <option value="recherche">En recherche de famille</option>
+       <option value="reserve">Réservé</option>
+       <option value="adopte">Déjà adopté</option>
+     </select>
+     <!-- Infos de l'animal -->
       <input type="text" id="nom" placeholder="Nom" required>
       <input type="date" id="naissance" required>
       <input type="text" id="photo" placeholder="URL de la photo" required>
