@@ -1,3 +1,23 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+nav ul{
+    list-style-type: none;
+    overflow: hidden;     
+}
+
+nav ul li {
+    float: left;          
+    margin-right: 20px;  
+}
+
+/* ===============Nav↑=========== */
+
 /* ======================== Styles globaux ======================== */
 body {
   font-family: Arial, sans-serif;
@@ -104,20 +124,34 @@ form {
   border-radius: 5px;
 }
 
-/* ======================== Connexion staff discrète ======================== */
+/* ======================== Connexion staff ======================== */
+
 #login-section {
-  position: fixed;           /* reste visible en haut même au scroll */
-  top: 20px;                
-  right: 20px;            
-  max-width: 250px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  z-index: 1001;             /* devant les autres éléments */
+  position: fixed;
+  top: 80px;             
+  right: 15px;
+  max-width: 140px;
+
+  padding: 3px 5px;
+  border: 1px solid transparent;   
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.6); 
+  font-size: 0.8rem;
+  color: #666; 
+
+  box-shadow: none;       
+  z-index: 900;          
+  opacity: 0.6;          
+  transition: opacity 0.3s ease, background-color 0.3s ease;
 }
+
+#login-section:hover {
+  opacity: 1;                          /* devient lisible au survol */
+  background-color: rgba(255,255,255,0.9);
+  border: 1px solid #ddd;
+}
+
+
 
 /* Inputs et bouton du formulaire de connexion */
 #login-section input,
@@ -142,6 +176,11 @@ form {
   font-size: 1rem;
   margin-bottom: 10px;
 }
+
+
+
+
+
 
 
 /* ======================== Responsive mobile ======================== */
@@ -195,6 +234,7 @@ form {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+  
   }
 
   .search-input-container,
