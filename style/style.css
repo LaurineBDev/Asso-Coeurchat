@@ -1,0 +1,17 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+nav ul{
+    list-style-type: none;
+    overflow: hidden;     
+}
+
+nav ul li {
+    float: left;          
+    margin-right: 20px;  
+}
