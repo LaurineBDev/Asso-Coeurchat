@@ -1,5 +1,5 @@
 # .github/workflows/firebase-hosting-merge.yml
-# Déploiement automatique sur Firebase Hosting lors d'un merge sur main
+# Déploiement automatique sur Firebase Hosting lors d'un push sur main
 
 name: Deploy to Firebase Hosting on merge
 on:
@@ -12,17 +12,15 @@ permissions:
   id-token: write
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       # 1️⃣ Récupérer le code du repo
       - uses: actions/checkout@v4
 
-      # 2️⃣ Installer les dépendances et build (ou remplacer par echo si pas de build)
-      - name: Install & Build
-        run: npm ci && npm run build
-        # Pour un site statique HTML/CSS/JS, remplace la ligne ci-dessus par :
-        # run: echo "No build needed"
+      # 2️⃣ Pas de build nécessaire pour HTML/CSS/JS
+      - name: Skip build
+        run: echo "No build needed"
 
       # 3️⃣ Déployer sur Firebase Hosting
       - name: Deploy to Firebase Hosting
