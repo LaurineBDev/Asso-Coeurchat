@@ -1,9 +1,8 @@
 nav {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-left: 40px;
-  margin-right: 40px;
+  align-items: center; 
+  background-color: #FFC7A7;
 }
 
 nav ul{
@@ -16,6 +15,20 @@ nav ul li {
     margin-right: 20px;  
 }
 
+nav li a {
+    text-decoration: none; 
+    color: black;          
+    font-weight: bold;    
+}
+nav li a:hover {
+    color: #FF5733;       
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
 /* ===============Nav↑=========== */
 .main-index{
   margin-left: 40px;
