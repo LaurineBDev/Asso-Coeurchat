@@ -29,8 +29,111 @@ body {
   font-family: Arial, sans-serif;
   margin: 20px;
 }
-/* ===============Nav↑=========== */
+/* ================Nav↑============================== */
+
 .main-index{
   margin-left: 40px;
   margin-right: 40px;
+}
+
+
+
+
+/* ============== Section Hero ================= */
+.hero {
+  margin-top: 20px;
+  position: relative;
+  background-image: url("/img/logo-asso.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 90vh; /* prend presque tout l’écran */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+}
+
+/* Overlay sombre pour lisibilité */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55); /* voile noir transparent */
+  z-index: 1;
+}
+
+.hero h2 {
+  position: relative;
+  z-index: 2;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7); /* lisibilité sur image */
+}
+
+.hero p {
+  position: relative;
+  z-index: 2;
+  font-size: 1.3rem;
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+  line-height: 1.6;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.hero a {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  background: #FF5733;
+  color: white;
+  padding: 12px 28px;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+.hero a:hover {
+  background: #e74c3c;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+}
+
+/* ===================link-adopter====================== */
+
+.link-index {
+  margin-top: 40px;
+  display: flex;              /* active flexbox */
+  align-items: center;        /* centre verticalement */
+  justify-content: center;    /* centre horizontalement dans la page */
+  gap: 20px;                  /* espace entre image et lien */
+  text-align: left;           /* évite que le texte soit centré */
+}
+
+.link-index img {
+  width: 150px;   /* évite rem */
+  height: 150px;
+}
+
+.link-index a {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #FF5733;
+  margin-right: 10px;
+}
+
+.link-index p {
+  margin: 5px 0 0 0;
+  font-size: 1rem;
 }
