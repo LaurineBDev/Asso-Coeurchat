@@ -4,7 +4,7 @@ import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  addDoc, collection, doc, getFirestore, onSnapshot, updateDoc
+  addDoc, collection, doc, getFirestore, onSnapshot, updateDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ======================== Configuration Firebase ========================
@@ -149,7 +149,7 @@ function renderListeAnimaux() {
 
       const div = document.createElement("div");
       div.classList.add("animal");
-      div.classList.add(animal.sexe.toLowerCase()); // 'mâle' ou 'femelle'
+      div.classList.add(animal.sexe.toLowerCase());
 
       const textDiv = document.createElement("div");
       textDiv.classList.add("text-content");
@@ -188,7 +188,6 @@ function renderListeAnimaux() {
         const body = encodeURIComponent(
           `Bonjour,\n\nJe suis intéressé par ${animal.nom}. J'aimerais avoir plus d'informations sur cet animal, pouvez-vous me recontacter.\n\nCordialement.`
         );
-
         window.location.href = `mailto:maildel@asso.com?subject=${subject}&body=${body}`;
       });
 
@@ -217,6 +216,7 @@ function renderListeAnimaux() {
 
         textDiv.appendChild(statusDiv);
 
+        // Modifier
         const editBtn = document.createElement("button");
         editBtn.textContent = "Modifier";
         editBtn.classList.add("edit-btn");
@@ -231,8 +231,20 @@ function renderListeAnimaux() {
           animalForm.querySelector("button").textContent = "Modifier";
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-
         textDiv.appendChild(editBtn);
+
+        // Supprimer
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Supprimer";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.addEventListener("click", async () => {
+          const confirmDelete = confirm(`Voulez-vous vraiment supprimer ${animal.nom} ?`);
+          if (confirmDelete) {
+            const docRef = doc(db, "animaux", docSnap.id);
+            await deleteDoc(docRef);
+          }
+        });
+        textDiv.appendChild(deleteBtn);
       }
 
       listeAnimaux.appendChild(div);
