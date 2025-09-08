@@ -84,25 +84,23 @@ onAuthStateChanged(auth, (user) => {
 animalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const photoInput = document.getElementById("photo").value;
-  const photos = photoInput.split(',').map(url => url.trim()).filter(url => url !== ""); 
   const status = document.getElementById("status").value;
   const nom = document.getElementById("nom").value;
   const naissance = document.getElementById("naissance").value;
+  const photo = document.getElementById("photo").value;
   const sexe = document.getElementById("sexe").value;
   const description = document.getElementById("description").value;
 
   try {
     if (currentEditId) {
       const docRef = doc(db, "animaux", currentEditId);
-      await updateDoc(docRef, { nom, naissance, photos, description, sexe, status });
+      await updateDoc(docRef, { nom, naissance, photo, description, sexe, status });
+      currentEditId = null;
+      animalForm.querySelector("button").textContent = "Ajouter";
     } else {
-      await addDoc(collection(db, "animaux"), { nom, naissance, photos, description, sexe, status });
+      await addDoc(collection(db, "animaux"), { nom, naissance, photo, description, sexe, status });
     }
-
     animalForm.reset();
-    currentEditId = null;
-    animalForm.querySelector("button").textContent = "Ajouter";
   } catch (error) {
     alert("Erreur : " + error.message);
   }
@@ -172,21 +170,14 @@ function renderListeAnimaux() {
         <p>${animal.description}</p>
       `;
 
-      // Affichage multiple des photos
-      const imagesDiv = document.createElement("div");
-      imagesDiv.classList.add("images-container");
-
-      animal.photos.forEach(src => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = animal.nom;
-        img.classList.add("animal-photo");
-        img.addEventListener("click", () => showFullscreen(src));
-        imagesDiv.appendChild(img);
-      });
+      const img = document.createElement("img");
+      img.src = animal.photo;
+      img.alt = animal.nom;
+      img.classList.add("animal-photo");
+      img.addEventListener("click", () => showFullscreen(animal.photo));
 
       div.appendChild(textDiv);
-      div.appendChild(imagesDiv);
+      div.appendChild(img);
 
       // Bouton "intéressé"
       const interestBtn = document.createElement("button");
@@ -232,7 +223,7 @@ function renderListeAnimaux() {
         editBtn.addEventListener("click", () => {
           document.getElementById("nom").value = animal.nom;
           document.getElementById("naissance").value = animal.naissance;
-          document.getElementById("photo").value = animal.photos.join(', ');
+          document.getElementById("photo").value = animal.photo;
           document.getElementById("description").value = animal.description;
           document.getElementById("sexe").value = animal.sexe;
           document.getElementById("status").value = animal.status || "recherche";
