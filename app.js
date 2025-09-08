@@ -149,6 +149,7 @@ function renderListeAnimaux() {
 
       const div = document.createElement("div");
       div.classList.add("animal");
+      div.classList.add(animal.sexe.toLowerCase()); // 'mâle' ou 'femelle'
 
       const textDiv = document.createElement("div");
       textDiv.classList.add("text-content");
@@ -178,7 +179,7 @@ function renderListeAnimaux() {
       div.appendChild(textDiv);
       div.appendChild(img);
 
-      // Bouton "intéressé" pour tous
+      // Bouton "intéressé"
       const interestBtn = document.createElement("button");
       interestBtn.textContent = "Intéressé par l'animal, envoyer un mail";
       interestBtn.classList.add("adopt-btn");
@@ -228,6 +229,7 @@ function renderListeAnimaux() {
           document.getElementById("status").value = animal.status || "recherche";
           currentEditId = docSnap.id;
           animalForm.querySelector("button").textContent = "Modifier";
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
         textDiv.appendChild(editBtn);
