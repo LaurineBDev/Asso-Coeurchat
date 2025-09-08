@@ -252,6 +252,32 @@ form {
   }
 }
 
+#search-section {
+  margin-top: 50px;
+  margin-left: 20rem;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.h2-seach {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  
+}
+
+
+/* Exemple : couleur de fond ou bordure selon le sexe */
+.animal.male {
+  border-left: 5px solid #3498db; /* bleu pour mâle */
+}
+
+.animal.femelle {
+  border-left: 5px solid #e91e63; /* rose pour femelle */
+}
+
+
 /* Pour très petits écrans (téléphones < 480px) */
 @media (max-width: 480px) {
   body {
