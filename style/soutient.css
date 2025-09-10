@@ -1,0 +1,32 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  background-color: #FFC7A7;
+}
+
+nav ul{
+    list-style-type: none;
+    overflow: hidden;     
+}
+
+nav ul li {
+    float: left;          
+    margin-right: 20px;  
+}
+
+nav li a {
+    text-decoration: none; 
+    color: black;          
+    font-weight: bold;    
+}
+nav li a:hover {
+    color: #FF5733;       
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+/* ===============Nav↑=========== */
