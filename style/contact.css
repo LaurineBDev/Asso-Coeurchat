@@ -83,3 +83,78 @@ body {
   text-decoration: underline;
 }
 
+
+
+/* ================= RESPONSIVE ================== */
+
+/* Pour tablettes (moins de 768px) */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  nav ul {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+  }
+
+  nav ul li {
+    float: none;
+    margin: 10px 0;
+  }
+
+  .contact-container {
+    padding: 1.2rem;
+  }
+
+  .contact-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1rem;
+  }
+
+  .contact-info {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* Pour mobiles (moins de 480px) */
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+  }
+
+  nav h1 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  nav ul {
+    align-items: center;
+  }
+
+  .contact-container {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .contact-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .contact-container h2 {
+    font-size: 0.9rem;
+  }
+
+  .contact-info {
+    font-size: 0.95rem;
+  }
+}
